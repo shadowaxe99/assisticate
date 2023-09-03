@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Executive Assistant</title>
+</head>
+<body>
+    <h1>AI Executive Assistant</h1>
+    <div id="conversation"></div>
+    <input type="text" id="user-input" placeholder="Type your command here">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var conversation = document.getElementById('conversation');
+        var userInput = document.getElementById('user-input');
+
+        function appendMessage(message) {
+            var messageElement = document.createElement('p');
+            messageElement.innerText = message;
+            conversation.appendChild(messageElement);
+        }
+
+        function processCommand() {
+            var userCommand = userInput.value;
+            userInput.value = '';
+
+            $.ajax({
+                url: '/process_command',
+                type: 'POST',
+                data: { user_command: userCommand },
+                success: function(response) {
+                    appendMessage('User: ' + userCommand);
+                    appendMessage('Assistant: ' + response);
+                }
+            });
+        }
+
+        userInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                processCommand();
+            }
+        });
+    </script>
+</body>
+</html>
